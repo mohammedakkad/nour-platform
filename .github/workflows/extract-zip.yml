@@ -1,0 +1,38 @@
+name: 📦 Extract Project ZIP
+
+on:
+  workflow_dispatch:   # تشغيل يدوي بضغطة زر
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Find and extract ZIP
+        run: |
+          ZIP_FILE=$(find . -name "nour-platform.zip" | head -1)
+          echo "Found: $ZIP_FILE"
+          unzip -o "$ZIP_FILE" -d extracted_temp/
+          
+          # انقل الملفات من داخل المجلد للجذر
+          INNER=$(ls extracted_temp/)
+          mv extracted_temp/$INNER/* . 2>/dev/null || true
+          mv extracted_temp/$INNER/.[!.]* . 2>/dev/null || true
+          
+          # احذف الـ ZIP والمجلد المؤقت
+          rm -f "$ZIP_FILE"
+          rm -rf extracted_temp/
+
+      - name: Commit extracted files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git status
+          git commit -m "feat: extract project files from ZIP 📦" || echo "Nothing to commit"
+          git push
