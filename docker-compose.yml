@@ -1,0 +1,91 @@
+version: '3.9'
+
+services:
+  # ── PostgreSQL Database ──────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: nour-postgres
+    environment:
+      POSTGRES_DB: nour_db
+      POSTGRES_USER: nour_user
+      POSTGRES_PASSWORD: nour_dev_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nour_user -d nour_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── MinIO (S3-compatible storage for local dev) ──
+  minio:
+    image: minio/minio:latest
+    container_name: nour-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"     # MinIO console
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ── Spring Boot Backend ──────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: nour-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/nour_db
+      DATABASE_USERNAME: nour_user
+      DATABASE_PASSWORD: nour_dev_password
+      JWT_SECRET: dev_secret_key_minimum_256_bits_long_replace_in_production
+      JWT_EXPIRY_HOURS: 24
+      STORAGE_TYPE: minio
+      S3_BUCKET: nour-content
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: minioadmin
+      S3_SECRET_KEY: minioadmin123
+      FIREBASE_ENABLED: "false"
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+
+  # ── React Web Frontend ──────────────────────
+  web:
+    image: node:20-alpine
+    container_name: nour-web
+    working_dir: /app
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+    environment:
+      VITE_API_URL: http://localhost:8080/api/v1
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  minio_data:

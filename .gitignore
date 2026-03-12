@@ -1,0 +1,48 @@
+# ── Android ──────────────────────────────────
+android/.gradle/
+android/local.properties
+android/app/build/
+android/**/*.apk
+android/**/*.aab
+android/app/nour-release.keystore    # NEVER commit keystore!
+android/keystore.properties          # NEVER commit keystore passwords!
+
+# ── Backend ──────────────────────────────────
+backend/build/
+backend/.gradle/
+backend/firebase-credentials.json   # NEVER commit Firebase credentials!
+*.jar
+!gradle-wrapper.jar
+
+# ── Web ──────────────────────────────────────
+web/node_modules/
+web/dist/
+web/.env.local
+web/.env.production
+
+# ── Environment ──────────────────────────────
+.env
+.env.local
+.env.production
+*.env
+
+# ── IDE ──────────────────────────────────────
+.idea/
+*.iml
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ── OS ───────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Docker ───────────────────────────────────
+docker-compose.override.yml
+
+# ── Logs ────────────────────────────────────
+*.log
+logs/
