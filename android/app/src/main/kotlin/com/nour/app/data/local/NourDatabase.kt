@@ -22,7 +22,7 @@ import javax.inject.Singleton
         NotificationEntity::class
     ],
     version = 1,
-    exportSchema = true
+    exportSchema = false
 )
 abstract class NourDatabase : RoomDatabase() {
     abstract fun contentDao(): ContentDao
