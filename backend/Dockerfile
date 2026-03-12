@@ -7,7 +7,7 @@ COPY gradle gradle
 RUN ./gradlew dependencies --no-daemon 2>/dev/null || true
 
 COPY src src
-RUN ./gradlew bootJar --no-daemon -x test
+    RUN chmod +x gradlew && ./gradlew bootJar --no-daemon -x test
 
 # ──────────────────────────────────────────────
 # Runtime image — smaller footprint
