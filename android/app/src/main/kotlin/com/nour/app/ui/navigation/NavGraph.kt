@@ -5,202 +5,90 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.nour.app.domain.model.UserRole
+import androidx.navigation.compose.rememberNavController
 import com.nour.app.ui.screens.auth.LoginScreen
-import com.nour.app.ui.screens.auth.AuthViewModel
-import com.nour.app.ui.screens.student.*
-import com.nour.app.ui.screens.teacher.*
-import com.nour.app.ui.screens.admin.*
-import com.nour.app.ui.screens.parent.*
-
-// ──────────────────────────────────────────────
-// Route Definitions
-// ──────────────────────────────────────────────
+import com.nour.app.ui.screens.student.StudentHomeScreen
+import com.nour.app.ui.viewmodel.AuthViewModel
 
 sealed class Screen(val route: String) {
-    // Auth
-    data object Login : Screen("login")
-    data object Register : Screen("register")
-
-    // Student
-    data object StudentHome : Screen("student/home")
-    data object StudentLessons : Screen("student/lessons")
-    data object StudentExams : Screen("student/exams")
-    data object StudentProgress : Screen("student/progress")
-    data object StudentNotifications : Screen("student/notifications")
-    data class LessonDetail(val id: String = "{contentId}") :
-        Screen("student/lesson/{contentId}") {
-        fun route(id: String) = "student/lesson/$id"
-    }
-    data class ExamScreen(val id: String = "{examId}") :
-        Screen("student/exam/{examId}") {
-        fun route(id: String) = "student/exam/$id"
-    }
-    data class ExamResult(val submissionId: String = "{submissionId}") :
-        Screen("student/exam-result/{submissionId}") {
-        fun route(id: String) = "student/exam-result/$id"
-    }
-
-    // Teacher
-    data object TeacherHome : Screen("teacher/home")
-    data object TeacherContent : Screen("teacher/content")
-    data object TeacherExams : Screen("teacher/exams")
-    data object TeacherClassReport : Screen("teacher/class-report")
-    data object UploadContent : Screen("teacher/upload")
-    data object CreateExam : Screen("teacher/create-exam")
-
-    // Admin
-    data object AdminHome : Screen("admin/home")
-    data object AdminApproval : Screen("admin/content-approval")
-    data object AdminUsers : Screen("admin/users")
-    data object AdminClasses : Screen("admin/classes")
-
-    // Parent
-    data object ParentHome : Screen("parent/home")
-    data object ParentProgress : Screen("parent/progress")
+    object Login : Screen("login")
+    object StudentHome : Screen("student_home")
+    object TeacherHome : Screen("teacher_home")
+    object AdminHome : Screen("admin_home")
+    object ParentHome : Screen("parent_home")
+    object DonorHome : Screen("donor_home")
 }
-
-// ──────────────────────────────────────────────
-// Navigation Graph
-// ──────────────────────────────────────────────
 
 @Composable
 fun NourNavGraph(
-    navController: NavHostController,
-    authViewModel: AuthViewModel = hiltViewModel()
+    navController: NavHostController = rememberNavController()
 ) {
+    val authViewModel: AuthViewModel = hiltViewModel()
     val authState by authViewModel.authState.collectAsState()
-    val startDestination = if (authState.isLoggedIn) {
-        when (authState.user?.role) {
-            UserRole.STUDENT -> Screen.StudentHome.route
-            UserRole.TEACHER -> Screen.TeacherHome.route
-            UserRole.SCHOOL_ADMIN -> Screen.AdminHome.route
-            UserRole.PARENT -> Screen.ParentHome.route
-            else -> Screen.StudentHome.route
-        }
-    } else Screen.Login.route
 
-    NavHost(
-        navController = navController,
-        startDestination = startDestination
-    ) {
-        // ── Auth ──
+    val startDestination = if (authState.isLoggedIn) {
+        when (authState.userRole) {
+            "TEACHER"     -> Screen.TeacherHome.route
+            "SCHOOL_ADMIN", "SUPER_ADMIN" -> Screen.AdminHome.route
+            "PARENT"      -> Screen.ParentHome.route
+            else          -> Screen.StudentHome.route
+        }
+    } else {
+        Screen.Login.route
+    }
+
+    NavHost(navController = navController, startDestination = startDestination) {
+
         composable(Screen.Login.route) {
             LoginScreen(
                 onLoginSuccess = { role ->
                     val dest = when (role) {
-                        UserRole.STUDENT -> Screen.StudentHome.route
-                        UserRole.TEACHER -> Screen.TeacherHome.route
-                        UserRole.SCHOOL_ADMIN -> Screen.AdminHome.route
-                        UserRole.PARENT -> Screen.ParentHome.route
-                        else -> Screen.StudentHome.route
+                        "TEACHER"     -> Screen.TeacherHome.route
+                        "SCHOOL_ADMIN", "SUPER_ADMIN" -> Screen.AdminHome.route
+                        "PARENT"      -> Screen.ParentHome.route
+                        else          -> Screen.StudentHome.route
                     }
                     navController.navigate(dest) {
                         popUpTo(Screen.Login.route) { inclusive = true }
-                    }
-                },
-                onNavigateToRegister = { navController.navigate(Screen.Register.route) }
-            )
-        }
-
-        // ── Student ──
-        composable(Screen.StudentHome.route) {
-            StudentHomeScreen(
-                onNavigateToLessons = { navController.navigate(Screen.StudentLessons.route) },
-                onNavigateToExams = { navController.navigate(Screen.StudentExams.route) },
-                onNavigateToProgress = { navController.navigate(Screen.StudentProgress.route) },
-                onNavigateToNotifications = { navController.navigate(Screen.StudentNotifications.route) }
-            )
-        }
-
-        composable(Screen.StudentLessons.route) {
-            StudentLessonsScreen(
-                onContentClick = { id -> navController.navigate(LessonDetail().route(id)) },
-                onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable(
-            route = Screen.LessonDetail().route,
-            arguments = listOf(navArgument("contentId") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val contentId = backStackEntry.arguments?.getString("contentId") ?: return@composable
-            LessonDetailScreen(
-                contentId = contentId,
-                onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable(Screen.StudentExams.route) {
-            StudentExamsScreen(
-                onExamClick = { id -> navController.navigate(ExamScreen().route(id)) },
-                onBack = { navController.popBackStack() }
-            )
-        }
-
-        composable(
-            route = Screen.ExamScreen().route,
-            arguments = listOf(navArgument("examId") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val examId = backStackEntry.arguments?.getString("examId") ?: return@composable
-            ExamTakingScreen(
-                examId = examId,
-                onFinished = { submissionId ->
-                    navController.navigate(ExamResult().route(submissionId)) {
-                        popUpTo(Screen.StudentExams.route)
                     }
                 }
             )
         }
 
-        composable(Screen.StudentProgress.route) {
-            StudentProgressScreen(onBack = { navController.popBackStack() })
+        composable(Screen.StudentHome.route) {
+            StudentHomeScreen(
+                onNavigateToLessons  = {},
+                onNavigateToExams    = {},
+                onNavigateToProgress = {},
+                onNavigateToNotifications = {}
+            )
         }
 
-        composable(Screen.StudentNotifications.route) {
-            StudentNotificationsScreen(onBack = { navController.popBackStack() })
-        }
-
-        // ── Teacher ──
         composable(Screen.TeacherHome.route) {
-            TeacherHomeScreen(
-                onNavigateToContent = { navController.navigate(Screen.TeacherContent.route) },
-                onNavigateToExams = { navController.navigate(Screen.TeacherExams.route) },
-                onNavigateToReport = { navController.navigate(Screen.TeacherClassReport.route) },
-                onUploadContent = { navController.navigate(Screen.UploadContent.route) }
-            )
+            PlaceholderScreen("شاشة المعلم — قريباً")
         }
 
-        composable(Screen.UploadContent.route) {
-            UploadContentScreen(onBack = { navController.popBackStack() })
-        }
-
-        composable(Screen.CreateExam.route) {
-            CreateExamScreen(onBack = { navController.popBackStack() })
-        }
-
-        composable(Screen.TeacherClassReport.route) {
-            TeacherClassReportScreen(onBack = { navController.popBackStack() })
-        }
-
-        // ── Admin ──
         composable(Screen.AdminHome.route) {
-            AdminHomeScreen(
-                onNavigateToApproval = { navController.navigate(Screen.AdminApproval.route) },
-                onNavigateToUsers = { navController.navigate(Screen.AdminUsers.route) },
-                onNavigateToClasses = { navController.navigate(Screen.AdminClasses.route) }
-            )
+            PlaceholderScreen("شاشة المدير — قريباً")
         }
 
-        // ── Parent ──
         composable(Screen.ParentHome.route) {
-            ParentHomeScreen(
-                onNavigateToProgress = { navController.navigate(Screen.ParentProgress.route) }
-            )
+            PlaceholderScreen("شاشة ولي الأمر — قريباً")
+        }
+
+        composable(Screen.DonorHome.route) {
+            PlaceholderScreen("شاشة المانح — قريباً")
         }
     }
+}
+
+@Composable
+private fun PlaceholderScreen(text: String) {
+    androidx.compose.material3.Text(
+        text = text,
+        modifier = androidx.compose.ui.Modifier.fillMaxSize()
+            .wrapContentSize()
+    )
 }
