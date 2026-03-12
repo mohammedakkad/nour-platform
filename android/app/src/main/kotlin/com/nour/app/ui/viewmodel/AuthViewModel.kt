@@ -33,22 +33,32 @@ class AuthViewModel @Inject constructor(
             _authState.value = AuthState(isLoading = true)
             try {
                 val response = authApi.login(LoginRequest(username, password))
-                _authState.value = AuthState(
-                    isLoading  = false,
-                    isSuccess  = true,
-                    isLoggedIn = true,
-                    userRole   = response.user.role,
-                    userId     = response.user.id,
-                    userName   = response.user.fullNameAr
-                )
+                val body = response.body()
+                if (response.isSuccessful && body != null) {
+                    _authState.value = AuthState(
+                        isLoading = false,
+                        isSuccess = true,
+                        isLoggedIn = true,
+                        userRole = body.user.role,
+                        userId = body.user.id,
+                        userName = body.user.fullNameAr
+                    )
+                } else {
+                    _authState.value = AuthState(
+                        isLoading = false,
+                        errorMessage = "خطأ ${response.code()}: تحقق من اسم المستخدم وكلمة المرور"
+                    )
+                }
             } catch (e: Exception) {
                 _authState.value = AuthState(
-                    isLoading    = false,
+                    isLoading = false,
                     errorMessage = e.message ?: "خطأ في تسجيل الدخول"
                 )
             }
         }
     }
 
-    fun logout() { _authState.value = AuthState() }
+    fun logout() {
+        _authState.value = AuthState()
+    }
 }
