@@ -1,14 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">T-Rex Card Game</string>
-    <string name="create_game">Create Game</string>
-    <string name="join_game">Join Game</string>
-    <string name="settings">Settings</string>
-    <string name="exit">Exit</string>
-    <string name="player_name">Player Name</string>
-    <string name="host_ip">Host IP Address</string>
-    <string name="start_game">Start Game</string>
-    <string name="waiting_for_players">Waiting for Players</string>
-    <string name="connected_to_game">Connected to Game</string>
-    <string name="game_in_progress">Game in Progress</string>
+    <string name="app_name">نور</string>
 </resources>
