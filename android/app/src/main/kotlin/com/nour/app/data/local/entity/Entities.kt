@@ -1,10 +1,7 @@
 package com.nour.app.data.local.entity
 
-import androidx.room.*
-
-// ──────────────────────────────────────────────
-// Room Entities (local database tables)
-// ──────────────────────────────────────────────
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 @Entity(tableName = "users")
 data class UserEntity(
@@ -12,10 +9,9 @@ data class UserEntity(
     val username: String,
     val fullNameAr: String,
     val role: String,
-    val schoolId: String?,
-    val classId: String?,
-    val isActive: Boolean,
-    val lastSync: Long
+    val schoolId: String? = null,
+    val classId: String? = null,
+    val isActive: Boolean = true
 )
 
 @Entity(tableName = "content_items")
@@ -24,59 +20,48 @@ data class ContentItemEntity(
     val titleAr: String,
     val type: String,
     val subject: String,
-    val gradeLevel: Int,
-    val status: String,
-    val createdBy: String,
-    val fileUrl: String?,
-    val localFilePath: String?,
-    val fileSizeMb: Double,
-    val durationMinutes: Int?,
-    val downloadCount: Int,
-    val isDownloaded: Boolean,
-    val lastSyncedAt: Long
+    val gradeLevel: Int = 0,
+    val fileUrl: String? = null,
+    val fileSizeMb: Double = 0.0,
+    val durationMinutes: Int? = null,
+    val isDownloaded: Boolean = false,
+    val syncStatus: String = "PUBLISHED",
+    val createdAt: Long = System.currentTimeMillis()
 )
 
 @Entity(tableName = "exams")
 data class ExamEntity(
     @PrimaryKey val id: String,
     val titleAr: String,
-    val contentId: String?,
     val classId: String,
-    val createdBy: String,
-    val timeLimitMinutes: Int,
-    val maxAttempts: Int,
-    val passScore: Double,
-    val availableFrom: Long,
-    val availableUntil: Long,
-    val shuffleQuestions: Boolean,
-    val questionsJson: String     // serialized JSON of questions list
+    val timeLimitMinutes: Int = 0,
+    val maxAttempts: Int = 1,
+    val passScore: Double = 60.0,
+    val availableFrom: Long = 0L,
+    val availableUntil: Long = Long.MAX_VALUE,
+    val shuffleQuestions: Boolean = false
 )
 
-@Entity(tableName = "exam_submissions",
-    indices = [Index(value = ["examId", "studentId"])])
+@Entity(tableName = "exam_submissions")
 data class ExamSubmissionEntity(
     @PrimaryKey val id: String,
     val examId: String,
     val studentId: String,
-    val attemptNumber: Int,
-    val score: Double?,
-    val answersJson: String,          // serialized JSON Map<String, Int>
-    val startedAt: Long,
-    val submittedAt: Long?,
-    val durationSeconds: Int?,
-    val isPassed: Boolean?,
-    val isOfflineSubmission: Boolean,
-    val isSynced: Boolean             // false = needs to be synced to server
+    val score: Double = 0.0,
+    val isPassed: Boolean = false,
+    val answersJson: String = "",
+    val startedAt: Long = 0L,
+    val submittedAt: Long = 0L,
+    val durationSeconds: Int = 0,
+    val synced: Boolean = false
 )
 
 @Entity(tableName = "notifications")
 data class NotificationEntity(
     @PrimaryKey val id: String,
-    val recipientId: String,
-    val senderId: String?,
     val type: String,
     val titleAr: String,
     val bodyAr: String,
-    val isRead: Boolean,
-    val createdAt: Long
+    val isRead: Boolean = false,
+    val createdAt: Long = System.currentTimeMillis()
 )
