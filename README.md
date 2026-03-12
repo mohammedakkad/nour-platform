@@ -1,4 +1,4 @@
-# 🌟 نور — Nour Platform v1.0
+# 🌟 نور —Nour Platform v1.1.0
 
 > **Offline-First Educational Platform for Students in Conflict Zones**
 
