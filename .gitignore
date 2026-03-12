@@ -1,48 +1,75 @@
-# ── Android ──────────────────────────────────
-android/.gradle/
-android/local.properties
-android/app/build/
-android/**/*.apk
-android/**/*.aab
-android/app/nour-release.keystore    # NEVER commit keystore!
-android/keystore.properties          # NEVER commit keystore passwords!
-
-# ── Backend ──────────────────────────────────
-backend/build/
-backend/.gradle/
-backend/firebase-credentials.json   # NEVER commit Firebase credentials!
-*.jar
-!gradle-wrapper.jar
-
-# ── Web ──────────────────────────────────────
-web/node_modules/
-web/dist/
-web/.env.local
-web/.env.production
-
-# ── Environment ──────────────────────────────
-.env
-.env.local
-.env.production
-*.env
-
-# ── IDE ──────────────────────────────────────
-.idea/
 *.iml
-.vscode/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# ── OS ───────────────────────────────────────
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
 .DS_Store
-Thumbs.db
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+/.idea/
+/.kotlin
+/.idea
 
-# ── Docker ───────────────────────────────────
-docker-compose.override.yml
 
-# ── Logs ────────────────────────────────────
-*.log
-logs/
+# Built application files
+*.apk
+*.aab
+*.jar
+*.war
+*.ear
+
+# Files for the Dalvik VM
+*.dex
+
+# Java class files
+*.class
+
+# Generated files
+build/
+*/build/
+
+# Local configuration file (sdk path, etc)
+
+# Gradle generated folders
+.gradle/
+gradle-wrapper.jar
+
+# IDEs
+.idea/
+*.ipr
+*.iws
+.settings/
+.classpath
+.project
+.metadata
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+
+# Android Studio
+captures/
+*.keystore
+*.jks
+
+# Gradle properties
+gradle.properties.user
+
+# Maven
+.m2/repository/
+
+# VS Code
+.vscode/
+
+schemas/
+
+google-services.json
