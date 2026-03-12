@@ -15,7 +15,7 @@ data class StudentUiState(
     val isOnline: Boolean = true,
     val studentName: String = "",
     val className: String = "",
-    val averageScore: Float = 0f,
+    val averageScore: Double = 0.0,
     val streakDays: Int = 0,
     val totalStars: Int = 0,
     val availableLessons: Int = 0,
@@ -45,17 +45,17 @@ class StudentViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
             try {
-                val content = contentDao.getAllContent()
+                val content = contentDao.getContentByStatus("PUBLISHED")
                 _uiState.value = StudentUiState(
-                    isLoading = false,
-                    studentName = "الطالب",
-                    className = "الفصل",
+                    isLoading        = false,
+                    studentName      = "الطالب",
+                    className        = "الفصل",
                     availableLessons = content.size,
-                    recentContent = content.take(5)
+                    recentContent    = content.take(5)
                 )
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
-                    isLoading = false,
+                    isLoading    = false,
                     errorMessage = e.message
                 )
             }

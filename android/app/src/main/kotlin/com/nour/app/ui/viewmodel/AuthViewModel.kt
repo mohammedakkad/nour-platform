@@ -2,7 +2,6 @@ package com.nour.app.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nour.app.data.local.dao.UserDao
 import com.nour.app.data.remote.api.AuthApiService
 import com.nour.app.data.remote.dto.LoginRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,14 +15,14 @@ data class AuthState(
     val isSuccess: Boolean = false,
     val isLoggedIn: Boolean = false,
     val userRole: String = "",
-    val user: Any? = null,
+    val userId: String = "",
+    val userName: String = "",
     val errorMessage: String? = null
 )
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val authApi: AuthApiService,
-    private val userDao: UserDao
+    private val authApi: AuthApiService
 ) : ViewModel() {
 
     private val _authState = MutableStateFlow(AuthState())
@@ -31,7 +30,7 @@ class AuthViewModel @Inject constructor(
 
     fun login(username: String, password: String) {
         viewModelScope.launch {
-            _authState.value = _authState.value.copy(isLoading = true, errorMessage = null)
+            _authState.value = AuthState(isLoading = true)
             try {
                 val response = authApi.login(LoginRequest(username, password))
                 _authState.value = AuthState(
@@ -39,7 +38,8 @@ class AuthViewModel @Inject constructor(
                     isSuccess = true,
                     isLoggedIn = true,
                     userRole = response.user.role,
-                    user = response.user
+                    userId = response.user.id,
+                    userName = response.user.fullNameAr
                 )
             } catch (e: Exception) {
                 _authState.value = AuthState(
