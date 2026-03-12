@@ -141,6 +141,9 @@ dependencies {
 
     // Accompanist
     implementation(libs.accompanist.permissions)
+    
+    // Splash Screen
+    implementation(libs.androidx.splashscreen)
 
     // Testing
     testImplementation(libs.junit)
