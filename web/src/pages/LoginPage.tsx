@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Eye, EyeOff, Wifi, WifiOff } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { api } from '../api/client'
 import { useAuthStore } from '../store/authStore'
 
@@ -120,6 +121,13 @@ export default function LoginPage() {
                 </span>
               ) : 'دخول'}
             </button>
+
+            <p className="text-center text-sm text-gray-500 mt-2">
+              ليس لديك حساب؟{' '}
+              <Link to="/register" className="text-teal-700 font-medium hover:underline">
+                سجّل الآن
+              </Link>
+            </p>
           </form>
         </div>
 
