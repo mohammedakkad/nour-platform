@@ -9,6 +9,7 @@ import UserManagement from './pages/admin/UserManagement'
 import TeacherDashboard from './pages/teacher/TeacherDashboard'
 import DonorDashboard from './pages/donor/DonorDashboard'
 import NotFound from './pages/NotFound'
+import RegisterPage from './pages/RegisterPage'
 
 // Components
 import ProtectedRoute from './components/ProtectedRoute'
@@ -33,6 +34,8 @@ export default function App() {
       <Route path="/login" element={
         isAuthenticated ? <Navigate to={getDefaultRoute()} replace /> : <LoginPage />
       } />
+      
+      <Route path="/register" element={<RegisterPage />} />
 
       {/* Admin routes */}
       <Route path="/admin" element={
