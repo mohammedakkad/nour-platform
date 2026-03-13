@@ -17,7 +17,7 @@ class NourApplication : Application() {
     
     private fun setupCrashlytics() {
         com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
-            .setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
+            .setCrashlyticsCollectionEnabled(true)
     }
 
     private fun setupPeriodicSync() {
