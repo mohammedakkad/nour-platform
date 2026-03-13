@@ -21,6 +21,7 @@ fun StudentHomeScreen(
     onNavigateToExams: () -> Unit = {},
     onNavigateToProgress: () -> Unit = {},
     onNavigateToNotifications: () -> Unit = {},
+    onLogout: () -> Unit = {},
     viewModel: StudentViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -38,121 +39,121 @@ fun StudentHomeScreen(
             // Header
             Card(colors = CardDefaults.cardColors(containerColor = Color(0xFF0F766E))) {
                 Column(modifier = Modifier.padding(20.dp)) {
-                    Text(
-                        text = "أهلاً، ${uiState.studentName}",
-                        color = Color.White,
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = uiState.className,
-                        color = Color(0xFF99F6E4),
-                        fontSize = 14.sp
-                    )
-                    if (!uiState.isOnline) {
-                        Spacer(Modifier.height(8.dp))
-                        Text(
-                            text = "⚠️ وضع عدم الاتصال",
-                            color = Color(0xFFFDE68A),
-                            fontSize = 12.sp
-                        )
-                    }
-                }
-            }
-        }
-
-        item {
-            // Sync status
-            if (uiState.pendingSubmissions > 0) {
-                Card(colors = CardDefaults.cardColors(containerColor = Color(0xFFFEF9C3))) {
-                    Text(
-                        text = "⏳ ${uiState.pendingSubmissions} إجابة في انتظار الإرسال",
-                        modifier = Modifier.padding(12.dp),
-                        color = Color(0xFF92400E),
-                        fontSize = 14.sp
-                    )
-                }
-            }
-        }
-
-        item {
-            // Stats row
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                StatCard(
-                    modifier = Modifier.weight(1f),
-                    label = "المعدل",
-                    value = "${uiState.averageScore.toInt()}%"
-                )
-                StatCard(
-                    modifier = Modifier.weight(1f),
-                    label = "الدروس",
-                    value = "${uiState.availableLessons}"
-                )
-                StatCard(
-                    modifier = Modifier.weight(1f),
-                    label = "الاختبارات",
-                    value = "${uiState.pendingExams}"
-                )
-            }
-        }
-
-        item {
-            Text(
-                text = "آخر المحتوى",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF1F2937)
-            )
-        }
-
-        if (uiState.recentContent.isEmpty()) {
-            item {
-                Card {
-                    Box(
-                        modifier = Modifier.fillMaxWidth().padding(24.dp),
-                        contentAlignment = Alignment.Center
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("لا يوجد محتوى متاح حالياً", color = Color.Gray)
+                        Column {
+                            Text(
+                                text = "أهلاً، ${uiState.studentName}",
+                                color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold
+                            )
+                            Text(text = uiState.className, color = Color(0xFF99F6E4), fontSize = 14.sp)
+                        }
+                        IconButton(onClick = onLogout) {
+                            Icon(
+                                imageVector = androidx.compose.material.icons.Icons.Default.ExitToApp,
+                                contentDescription = "تسجيل الخروج",
+                                tint = Color.White.copy(alpha = 0.8f)
+                            )
+                        }
                     }
                 }
             }
-        } else {
-            items(uiState.recentContent) {
-                content ->
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color.White)
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            text = content.titleAr,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                        Text(
-                            text = "${content.subject} · ${content.type}",
-                            fontSize = 13.sp,
-                            color = Color.Gray
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
 
-@Composable
-private fun StatCard(modifier: Modifier = Modifier, label: String, value: String) {
-    Card(
-        modifier = modifier,
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Column(
-            modifier = Modifier.padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(text = value, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F766E))
-            Text(text = label, fontSize = 12.sp, color = Color.Gray)
+            item {
+                // Sync status
+                if (uiState.pendingSubmissions > 0) {
+                    Card(colors = CardDefaults.cardColors(containerColor = Color(0xFFFEF9C3))) {
+                        Text(
+                            text = "⏳ ${uiState.pendingSubmissions} إجابة في انتظار الإرسال",
+                            modifier = Modifier.padding(12.dp),
+                            color = Color(0xFF92400E),
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+            }
+
+            item {
+                // Stats row
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    StatCard(
+                        modifier = Modifier.weight(1f),
+                        label = "المعدل",
+                        value = "${uiState.averageScore.toInt()}%"
+                    )
+                    StatCard(
+                        modifier = Modifier.weight(1f),
+                        label = "الدروس",
+                        value = "${uiState.availableLessons}"
+                    )
+                    StatCard(
+                        modifier = Modifier.weight(1f),
+                        label = "الاختبارات",
+                        value = "${uiState.pendingExams}"
+                    )
+                }
+            }
+
+            item {
+                Text(
+                    text = "آخر المحتوى",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF1F2937)
+                )
+            }
+
+            if (uiState.recentContent.isEmpty()) {
+                item {
+                    Card {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().padding(24.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("لا يوجد محتوى متاح حالياً", color = Color.Gray)
+                        }
+                    }
+                }
+            } else {
+                items(uiState.recentContent) {
+                    content ->
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = CardDefaults.cardColors(containerColor = Color.White)
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                text = content.titleAr,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                            Text(
+                                text = "${content.subject} · ${content.type}",
+                                fontSize = 13.sp,
+                                color = Color.Gray
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
-}
+
+    @Composable
+    private fun StatCard(modifier: Modifier = Modifier, label: String, value: String) {
+        Card(
+            modifier = modifier,
+            colors = CardDefaults.cardColors(containerColor = Color.White)
+        ) {
+            Column(
+                modifier = Modifier.padding(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = value, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color(0xFF0F766E))
+                Text(text = label, fontSize = 12.sp, color = Color.Gray)
+            }
+        }
+    }

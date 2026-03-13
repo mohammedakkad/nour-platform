@@ -128,6 +128,10 @@ fun LoginScreen(
                         Text("دخول", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     }
                 }
+                TextButton(onClick = onNavigateToRegister) {
+                    Text("ليس لديك حساب؟ سجّل الآن",
+                        color = Color.White.copy(alpha = 0.85f), fontSize = 14.sp)
+                }
             }
         }
     }
