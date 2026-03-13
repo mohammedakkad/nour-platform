@@ -52,12 +52,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Background Sync Service -->
-        <service
-            android:name=".data.sync.SyncWorker"
-            android:exported="false"
-            android:foregroundServiceType="dataSync" />
-
         <!-- WiFi Direct Receiver -->
         <receiver
             android:name=".data.p2p.WiFiDirectBroadcastReceiver"

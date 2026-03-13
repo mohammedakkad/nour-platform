@@ -50,6 +50,7 @@ jobs:
         run: npm run build
         env:
           VITE_API_URL: ${{ vars.BACKEND_API_URL }}
+          GITHUB_PAGES_BASE: /nour-platform/
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
