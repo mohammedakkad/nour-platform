@@ -11,7 +11,13 @@ class NourApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        setupCrashlytics()
         setupPeriodicSync()
+    }
+    
+    private fun setupCrashlytics() {
+        com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+            .setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
     }
 
     private fun setupPeriodicSync() {
