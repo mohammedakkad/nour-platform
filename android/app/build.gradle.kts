@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.firebase.crashlytics)
 }
 
-// Load signing properties from environment (used by GitHub Actions)
+// Load signing properties from environment (used by GitHub Actions) 
 val keystoreProperties = Properties().apply {
     val keystoreFile = rootProject.file("keystore.properties")
     if (keystoreFile.exists()) load(keystoreFile.inputStream())
