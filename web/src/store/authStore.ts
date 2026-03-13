@@ -1,13 +1,14 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-interface User {
+export interface User {
   id: string
   username: string
   fullNameAr: string
   role: string
   schoolId?: string
   classId?: string
+  isActive: boolean
 }
 
 interface AuthStore {
@@ -18,11 +19,12 @@ interface AuthStore {
   login: (user: User, accessToken: string, refreshToken: string) => void
   logout: () => void
   setTokens: (accessToken: string, refreshToken: string) => void
+  updateUser: (user: Partial<User>) => void
 }
 
 export const useAuthStore = create<AuthStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       accessToken: null,
       refreshToken: null,
@@ -36,6 +38,9 @@ export const useAuthStore = create<AuthStore>()(
 
       setTokens: (accessToken, refreshToken) =>
         set({ accessToken, refreshToken }),
+
+      updateUser: (partial) =>
+        set({ user: get().user ? { ...get().user!, ...partial } : null }),
     }),
     {
       name: 'nour-auth',
