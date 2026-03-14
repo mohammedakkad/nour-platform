@@ -8,7 +8,7 @@ interface ContentItem {
   titleAr: string
   type: string
   subject: string
-  gradeLevel: int
+  gradeLevel: number
   status: string
   createdBy: string
   fileUrl: string | null
