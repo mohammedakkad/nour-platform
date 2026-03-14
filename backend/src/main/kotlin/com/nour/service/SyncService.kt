@@ -33,7 +33,7 @@ class SyncService(
                 id = it.id.toString(), titleAr = it.titleAr, type = it.type.name,
                 subject = it.subject, gradeLevel = it.gradeLevel, status = it.status.name,
                 createdBy = it.createdBy.fullNameAr, fileUrl = it.fileUrl,
-                fileSizeMb = it.fileSizeMb, durationMinutes = it.durationMinutes,
+                fileSizeMb = it.fileSizeMb.toDouble(), durationMinutes = it.durationMinutes,
                 downloadCount = it.downloadCount
             )}
         return SyncDeltaResponse(

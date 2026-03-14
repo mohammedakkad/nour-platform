@@ -81,7 +81,7 @@ class ContentService(
         status          = status.name,
         createdBy       = createdBy.fullNameAr,
         fileUrl         = fileUrl,
-        fileSizeMb      = fileSizeMb,
+        fileSizeMb      = fileSizeMb.toDouble(),
         durationMinutes = durationMinutes,
         downloadCount   = downloadCount
     )
