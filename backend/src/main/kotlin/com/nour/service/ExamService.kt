@@ -94,7 +94,7 @@ class ExamService(
         ))
         return ExamResultResponse(
             id = UUID.randomUUID().toString(),
-            score = score,
+            score = score.toDouble(),
             isPassed = isPassed,
             correctCount = correct,
             totalQuestions = questions.size,
