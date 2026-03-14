@@ -10,11 +10,21 @@ import java.util.UUID
 // Enums
 // ──────────────────────────────────────────────
 
-enum class UserRole { STUDENT, TEACHER, SCHOOL_ADMIN, PARENT, DONOR, SUPER_ADMIN }
-enum class ContentType { LESSON, WORKSHEET, QUIZ, VIDEO, AUDIO }
-enum class ContentStatus { DRAFT, REVIEW, PUBLISHED, ARCHIVED }
-enum class NotificationType { EXAM_RESULT, NEW_CONTENT, ASSIGNMENT, ALERT }
-enum class DeliveryChannel { IN_APP, PUSH, SMS }
+enum class UserRole {
+    STUDENT, TEACHER, SCHOOL_ADMIN, PARENT, DONOR, SUPER_ADMIN
+}
+enum class ContentType {
+    LESSON, WORKSHEET, QUIZ, VIDEO, AUDIO
+}
+enum class ContentStatus {
+    DRAFT, REVIEW, PUBLISHED, ARCHIVED
+}
+enum class NotificationType {
+    EXAM_RESULT, NEW_CONTENT, ASSIGNMENT, ALERT
+}
+enum class DeliveryChannel {
+    IN_APP, PUSH, SMS
+}
 
 // ──────────────────────────────────────────────
 // School Entity
@@ -27,8 +37,8 @@ data class School(
     @Column(nullable = false) val nameAr: String,
     val region: String,
     val governorate: String,
-    val latitude: Double? = null,
-    val longitude: Double? = null,
+    val latitude: java.math.BigDecimal,
+    val longitude: java.math.BigDecimal,
     val isActive: Boolean = true,
     @CreationTimestamp val createdAt: Instant = Instant.now()
 )
@@ -92,7 +102,7 @@ data class ContentItem(
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "approved_by_id")
     val approvedBy: User? = null,
     val fileUrl: String? = null,
-    val fileSizeMb: Double = 0.0,
+    val fileSizeMb: java.math.BigDecimal = java.math.BigDecimal.ZERO,
     val durationMinutes: Int? = null,
     val downloadCount: Int = 0,
     @CreationTimestamp val createdAt: Instant = Instant.now(),
