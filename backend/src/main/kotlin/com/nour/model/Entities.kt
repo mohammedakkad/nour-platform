@@ -102,7 +102,7 @@ data class ContentItem(
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "approved_by_id")
     val approvedBy: User? = null,
     val fileUrl: String? = null,
-    val fileSizeMb: java.math.BigDecimal = java.math.BigDecimal.ZERO,
+    val fileSizeMb: Double = 0.0,
     val durationMinutes: Int? = null,
     val downloadCount: Int = 0,
     @CreationTimestamp val createdAt: Instant = Instant.now(),

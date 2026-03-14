@@ -60,7 +60,7 @@ class ContentService(
                 UUID.fromString("00000000-0000-0000-0000-000000000000"))
                 .orElseThrow { RuntimeException("المستخدم غير موجود") },
             fileUrl    = fileUrl,
-            fileSizeMb = (file.size / (1024.0 * 1024.0)).toBigDecimal()
+            fileSizeMb = file.size / (1024.0 * 1024.0)
         )
         return contentRepository.save(item).toResponse()
     }
@@ -81,7 +81,7 @@ class ContentService(
         status          = status.name,
         createdBy       = createdBy.fullNameAr,
         fileUrl         = fileUrl,
-        fileSizeMb      = fileSizeMb.toDouble(),
+        fileSizeMb      = fileSizeMb,
         durationMinutes = durationMinutes,
         downloadCount   = downloadCount
     )
