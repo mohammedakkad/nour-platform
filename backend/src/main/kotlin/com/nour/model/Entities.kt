@@ -115,7 +115,7 @@ data class Exam(
     val createdBy: User,
     val timeLimitMinutes: Int,
     val maxAttempts: Int = 3,
-    val passScore: Double = 60.0,
+    val passScore: java.math.BigDecimal = java.math.BigDecimal("60.00"),
     val availableFrom: Instant,
     val availableUntil: Instant,
     val shuffleQuestions: Boolean = true,
@@ -147,7 +147,7 @@ data class ExamSubmission(
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "student_id", nullable = false)
     val student: User,
     val attemptNumber: Int,
-    val score: Double? = null,
+    val score: java.math.BigDecimal? = null,
     @Column(columnDefinition = "jsonb") val answersJson: String,
     val startedAt: Instant,
     val submittedAt: Instant? = null,
