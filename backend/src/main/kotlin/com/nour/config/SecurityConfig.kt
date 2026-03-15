@@ -31,6 +31,13 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests { auth ->
                 auth
+
+                    // ✅ أضف هذا السطر أولاً
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                    // Public endpoints
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
                     // Public endpoints
                     .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/v1/auth/register").permitAll()
