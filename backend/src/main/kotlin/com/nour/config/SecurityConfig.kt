@@ -79,8 +79,9 @@ class SecurityConfig(
         val configuration = CorsConfiguration().apply {
             allowedOrigins = listOf(
                 "http://localhost:3000",
-                "https://mohammedakkad.github.io",         // GitHub Pages
-                "https://nour-platform.org"            // Production web
+                "https://mohammedakkad.github.io",
+                "https://nour-platform.org",
+                "https://nour-platform-production.up.railway.app"
             )
             allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
             allowedHeaders = listOf("*")
