@@ -37,6 +37,7 @@ server:
     enabled: true
   error:
     include-message: always
+  forward-headers-strategy: framework
 
 # JWT Configuration
 jwt:
