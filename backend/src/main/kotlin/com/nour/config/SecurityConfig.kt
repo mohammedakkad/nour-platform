@@ -87,7 +87,7 @@ class SecurityConfig(
             allowedOriginPatterns = listOf("*")
             allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
             allowedHeaders = listOf("*")
-            allowCredentials = true
+            allowCredentials = false
             maxAge = 3600
         }
         return UrlBasedCorsConfigurationSource().apply {
