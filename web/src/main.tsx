@@ -5,11 +5,32 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App'
 import './index.css'
 
+// Initialize theme BEFORE render to prevent flash
+const initTheme = () => {
+  try {
+    const stored = localStorage.getItem('nour-theme')
+    if (stored) {
+      const { state } = JSON.parse(stored)
+      const theme = state?.theme ?? 'light'
+      const resolved = theme === 'system'
+        ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        : theme
+      document.documentElement.classList.add(resolved)
+    } else {
+      // Default: light
+      document.documentElement.classList.add('light')
+    }
+  } catch {
+    document.documentElement.classList.add('light')
+  }
+}
+initTheme()
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5,   // 5 minutes
-      retry: 2,
+      retry: 1,
+      staleTime: 30_000,
     },
   },
 })

@@ -15,6 +15,8 @@ import com.nour.app.ui.screens.auth.LoginScreen
 import com.nour.app.ui.screens.auth.RegisterScreen
 import com.nour.app.ui.screens.student.StudentHomeScreen
 import com.nour.app.ui.viewmodel.AuthViewModel
+import com.nour.app.ui.viewmodel.ThemeViewModel
+
 
 sealed class Screen(val route: String) {
     object Login : Screen("login")
@@ -28,10 +30,12 @@ sealed class Screen(val route: String) {
 
     @Composable
     fun NourNavGraph(
-        navController: NavHostController = rememberNavController()
+        navController: NavHostController = rememberNavController(),
+        themeViewModel: ThemeViewModel
 ) {
     val authViewModel: AuthViewModel = hiltViewModel()
     val authState by authViewModel.authState.collectAsState()
+    val themePreference by themeViewModel.themePreference.collectAsState()
 
     val startDestination = if (authState.isLoggedIn) {
         when (authState.userRole) {
