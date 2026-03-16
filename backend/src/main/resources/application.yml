@@ -101,6 +101,8 @@ spring:
     deserialization:
       READ_UNKNOWN_ENUM_VALUES_AS_NULL: false
     default-property-inclusion: non_null
+    mapper:
+      accept-case-insensitive-enums: true
 
 jwt:
   secret: test_secret_key_minimum_256_bits_long_for_hs256_algorithm_testing
