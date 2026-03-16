@@ -2,65 +2,227 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --color-primary: #0f766e;
-    --color-primary-dark: #065f46;
-    --color-accent: #c8410a;
-  }
+/* ─────────────────────────────────────────────
+   NOUR DESIGN TOKENS — Light Mode (default)
+───────────────────────────────────────────── */
+:root,
+.light {
+  /* Backgrounds */
+  --bg:           #F8FAFC;
+  --bg-subtle:    #F1F5F9;
+  --bg-muted:     #E2E8F0;
 
-  * {
-    box-sizing: border-box;
-  }
+  /* Surfaces (cards, panels) */
+  --surface:      #FFFFFF;
+  --surface-2:    #F8FAFC;
+  --surface-3:    #F1F5F9;
+
+  /* Borders */
+  --border:       #E2E8F0;
+  --border-strong:#CBD5E1;
+
+  /* Text */
+  --text:         #0F172A;
+  --text-muted:   #64748B;
+  --text-subtle:  #94A3B8;
+
+  /* Brand — Teal */
+  --teal:         #0F766E;
+  --teal-light:   #14B8A6;
+  --teal-dark:    #065F46;
+  --teal-bg:      #F0FDFA;
+  --teal-border:  #99F6E4;
+
+  /* Brand — Gold */
+  --gold:         #D97706;
+  --gold-light:   #F59E0B;
+  --gold-dark:    #B45309;
+  --gold-bg:      #FFFBEB;
+  --gold-border:  #FDE68A;
+
+  /* Status */
+  --success:      #15803D;
+  --success-bg:   #F0FDF4;
+  --warning:      #B45309;
+  --warning-bg:   #FFFBEB;
+  --error:        #DC2626;
+  --error-bg:     #FEF2F2;
+
+  /* Sidebar */
+  --sidebar-bg:       #FFFFFF;
+  --sidebar-border:   #E2E8F0;
+  --sidebar-item-active-bg:    #F0FDFA;
+  --sidebar-item-active-text:  #0F766E;
+  --sidebar-item-hover-bg:     #F8FAFC;
+
+  /* Input */
+  --input-bg:     #FFFFFF;
+  --input-border: #D1D5DB;
+  --input-focus:  #0F766E;
+
+  /* Shadow */
+  --shadow-sm:    0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:    0 4px 12px rgba(0,0,0,.08);
+  --shadow-lg:    0 10px 30px rgba(0,0,0,.1);
+}
+
+/* ─────────────────────────────────────────────
+   NOUR DESIGN TOKENS — Dark Mode
+───────────────────────────────────────────── */
+.dark {
+  /* Backgrounds */
+  --bg:           #060A10;
+  --bg-subtle:    #0D1117;
+  --bg-muted:     #161B22;
+
+  /* Surfaces */
+  --surface:      #0D1117;
+  --surface-2:    #161B22;
+  --surface-3:    #1C2128;
+
+  /* Borders */
+  --border:       rgba(255,255,255,0.08);
+  --border-strong:rgba(255,255,255,0.14);
+
+  /* Text */
+  --text:         #F8FAFC;
+  --text-muted:   #94A3B8;
+  --text-subtle:  #64748B;
+
+  /* Brand — Teal */
+  --teal:         #14B8A6;
+  --teal-light:   #2DD4BF;
+  --teal-dark:    #0F766E;
+  --teal-bg:      rgba(15,118,110,0.12);
+  --teal-border:  rgba(20,184,166,0.2);
+
+  /* Brand — Gold */
+  --gold:         #F59E0B;
+  --gold-light:   #FBBF24;
+  --gold-dark:    #D97706;
+  --gold-bg:      rgba(245,158,11,0.1);
+  --gold-border:  rgba(245,158,11,0.25);
+
+  /* Status */
+  --success:      #22C55E;
+  --success-bg:   rgba(34,197,94,0.1);
+  --warning:      #F59E0B;
+  --warning-bg:   rgba(245,158,11,0.1);
+  --error:        #F87171;
+  --error-bg:     rgba(220,38,38,0.1);
+
+  /* Sidebar */
+  --sidebar-bg:       #0D1117;
+  --sidebar-border:   rgba(255,255,255,0.07);
+  --sidebar-item-active-bg:    rgba(20,184,166,0.1);
+  --sidebar-item-active-text:  #14B8A6;
+  --sidebar-item-hover-bg:     rgba(255,255,255,0.04);
+
+  /* Input */
+  --input-bg:     rgba(255,255,255,0.05);
+  --input-border: rgba(255,255,255,0.1);
+  --input-focus:  rgba(245,158,11,0.5);
+
+  /* Shadow */
+  --shadow-sm:    0 1px 3px rgba(0,0,0,.3);
+  --shadow-md:    0 4px 12px rgba(0,0,0,.4);
+  --shadow-lg:    0 10px 30px rgba(0,0,0,.5);
+}
+
+/* ─────────────────────────────────────────────
+   BASE STYLES
+───────────────────────────────────────────── */
+@layer base {
+  * { box-sizing: border-box; }
 
   html {
     direction: rtl;
+    transition: background-color .3s ease, color .3s ease;
   }
 
   body {
     font-family: 'IBM Plex Sans Arabic', 'Tajawal', system-ui, sans-serif;
-    @apply bg-gray-50 text-gray-900 antialiased;
+    background-color: var(--bg);
+    color: var(--text);
+    @apply antialiased;
+    transition: background-color .3s ease, color .3s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Tajawal', 'IBM Plex Sans Arabic', sans-serif;
     font-weight: 700;
+    color: var(--text);
   }
 }
 
+/* ─────────────────────────────────────────────
+   COMPONENTS
+───────────────────────────────────────────── */
 @layer components {
+
+  /* Buttons */
   .btn-primary {
-    @apply bg-teal-700 hover:bg-teal-800 text-white font-medium px-4 py-2 rounded-lg 
-           transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2;
+    background-color: var(--teal);
+    color: #fff;
+    @apply font-medium px-4 py-2 rounded-lg transition-all duration-200
+           focus:outline-none focus:ring-2 focus:ring-offset-2;
+    focus-ring-color: var(--teal);
   }
+  .btn-primary:hover { background-color: var(--teal-dark); }
 
   .btn-secondary {
-    @apply bg-white hover:bg-gray-50 text-gray-700 font-medium px-4 py-2 rounded-lg 
-           border border-gray-300 transition-colors duration-200;
+    background-color: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    @apply font-medium px-4 py-2 rounded-lg transition-all duration-200;
   }
+  .btn-secondary:hover { background-color: var(--surface-2); }
 
+  /* Card */
   .card {
-    @apply bg-white rounded-xl border border-gray-200 p-6 shadow-sm;
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    @apply rounded-xl p-6;
+    transition: background-color .3s ease, border-color .3s ease;
   }
 
+  /* Input */
   .input-field {
-    @apply w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 
-           focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent
-           placeholder:text-gray-400;
+    background-color: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--text);
+    @apply w-full rounded-lg px-3 py-2 transition-all duration-200
+           focus:outline-none focus:ring-2;
+    --tw-ring-color: var(--input-focus);
   }
+  .input-field::placeholder { color: var(--text-subtle); }
 
-  .badge-student  { @apply bg-teal-100 text-teal-700 text-xs px-2 py-0.5 rounded-full font-medium; }
-  .badge-teacher  { @apply bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full font-medium; }
-  .badge-admin    { @apply bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full font-medium; }
-  .badge-parent   { @apply bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full font-medium; }
-  .badge-donor    { @apply bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded-full font-medium; }
+  /* Badges */
+  .badge-student { background-color: var(--teal-bg); color: var(--teal); border: 1px solid var(--teal-border); @apply text-xs px-2 py-0.5 rounded-full font-medium; }
+  .badge-teacher { @apply bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs px-2 py-0.5 rounded-full font-medium border border-blue-200 dark:border-blue-800; }
+  .badge-admin   { @apply bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-xs px-2 py-0.5 rounded-full font-medium border border-orange-200 dark:border-orange-800; }
+  .badge-parent  { @apply bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 text-xs px-2 py-0.5 rounded-full font-medium border border-purple-200 dark:border-purple-800; }
+  .badge-donor   { background-color: var(--bg-subtle); color: var(--text-muted); border: 1px solid var(--border); @apply text-xs px-2 py-0.5 rounded-full font-medium; }
 }
 
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* ─────────────────────────────────────────────
+   SCROLLBAR
+───────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-subtle); }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-subtle); }
+
+/* ─────────────────────────────────────────────
+   SMOOTH TRANSITIONS
+───────────────────────────────────────────── */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: .2s;
+  transition-timing-function: ease;
 }
-::-webkit-scrollbar-track { background: #f1f5f9; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+/* Exclude transitions from animations */
+.no-transition, .no-transition * {
+  transition: none !important;
+}
