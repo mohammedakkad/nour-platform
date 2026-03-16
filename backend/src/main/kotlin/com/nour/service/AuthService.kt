@@ -16,7 +16,7 @@ class AuthService(
 ) {
     fun login(request: LoginRequest): AuthResponse {
         val user = userRepository.findByUsername(request.username)
-            ?: throw RuntimeException("اسم المستخدم أو كلمة المرور غير صحيحة")
+        ?: throw RuntimeException("اسم المستخدم أو كلمة المرور غير صحيحة")
         if (!passwordEncoder.matches(request.password, user.passwordHash))
             throw RuntimeException("اسم المستخدم أو كلمة المرور غير صحيحة")
         if (!user.isActive)
@@ -28,43 +28,55 @@ class AuthService(
         if (userRepository.existsByUsername(request.username))
             throw RuntimeException("اسم المستخدم مستخدم مسبقاً")
 
+        // تحويل role من String إلى UserRole
+        val userRole = try {
+            UserRole.valueOf(request.role.uppercase()) // ← إضافة uppercase لتحويل الأحرف كلها إلى أحرف كبيرة
+        } catch (e: IllegalArgumentException) {
+            throw RuntimeException("دور المستخدم غير صحيح: ${request.role}")
+        }
+
+        // إنشاء المستخدم
         val user = User(
             username = request.username,
             passwordHash = passwordEncoder.encode(request.password),
             fullNameAr = request.fullNameAr,
-            role = request.role
+            role = userRole
         )
 
         val saved = userRepository.save(user)
         return buildAuthResponse(saved)
     }
-
+    
     fun refreshToken(request: RefreshTokenRequest): AuthResponse {
         if (!jwtTokenProvider.validateToken(request.refreshToken))
             throw RuntimeException("Refresh token غير صالح")
         val userId = jwtTokenProvider.getUserIdFromToken(request.refreshToken)
         val user = userRepository.findById(java.util.UUID.fromString(userId))
-            .orElseThrow { RuntimeException("المستخدم غير موجود") }
+        .orElseThrow {
+            RuntimeException("المستخدم غير موجود")
+        }
         return buildAuthResponse(user)
     }
 
-    fun logout() { /* Token is stateless — client deletes it */ }
+    fun logout() {
+        /* Token is stateless — client deletes it */
+    }
 
     private fun buildAuthResponse(user: User): AuthResponse {
-        val accessToken  = jwtTokenProvider.generateToken(user.id.toString(), user.username, user.role)
+        val accessToken = jwtTokenProvider.generateToken(user.id.toString(), user.username, user.role)
         val refreshToken = jwtTokenProvider.generateRefreshToken(user.id.toString())
         return AuthResponse(
-            accessToken  = accessToken,
+            accessToken = accessToken,
             refreshToken = refreshToken,
-            expiresIn    = 86400,
+            expiresIn = 86400,
             user = UserResponse(
-                id         = user.id.toString(),
-                username   = user.username,
+                id = user.id.toString(),
+                username = user.username,
                 fullNameAr = user.fullNameAr,
-                role       = user.role.name,
-                schoolId   = user.school?.id?.toString(),
+                role = user.role.name,
+                schoolId = user.school?.id?.toString(),
                 classId    = user.schoolClass?.id?.toString(),
-                isActive   = user.isActive
+                isActive = user.isActive
             )
         )
     }

@@ -60,7 +60,7 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("release")
-            buildConfigField("String", "BASE_URL", "\"http://nour-platform-production.up.railway.app/api/v1/\"")
+            buildConfigField("String", "BASE_URL", "\"https://nour-platform-production.up.railway.app/api/v1/\"")
             buildConfigField("Boolean", "OFFLINE_MODE", "false")
         }
     }
