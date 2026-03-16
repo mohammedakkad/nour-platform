@@ -18,7 +18,7 @@ data class RegisterRequest(
     val username: String,
     val password: String,
     @Json(name = "full_name_ar") val fullNameAr: String,
-    val role: UserRole,
+    val role: String,
     @Json(name = "school_id") val schoolId: String? = null,
     @Json(name = "enrollment_code") val enrollmentCode: String? = null
 )
