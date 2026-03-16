@@ -27,11 +27,18 @@ class AuthService(
     fun register(request: RegisterRequest): AuthResponse {
         if (userRepository.existsByUsername(request.username))
             throw RuntimeException("اسم المستخدم مستخدم مسبقاً")
+
+        val userRole = try {
+            UserRole.valueOf(request.role.uppercase())  // ← Add .uppercase()
+        } catch (e: IllegalArgumentException) {
+            throw RuntimeException("دور المستخدم غير صحيح: ${request.role}")
+        }
+
         val user = User(
             username = request.username,
             passwordHash = passwordEncoder.encode(request.password),
             fullNameAr = request.fullNameAr,
-            role = UserRole.valueOf(request.role)
+            role = userRole
         )
         val saved = userRepository.save(user)
         return buildAuthResponse(saved)
