@@ -7,116 +7,84 @@ import {
 import { useAuthStore } from '../store/authStore'
 import { useThemeStore } from '../store/themeStore'
 import ThemeToggle from './ThemeToggle'
-import clsx from 'clsx'
 
-interface NavItem {
-  to: string
-  icon: React.ReactNode
-  label: string
-  roles: string[]
-}
-
-const navItems: NavItem[] = [
-  { to: '/admin',                  icon: <LayoutDashboard size={18} />, label: 'لوحة التحكم',    roles: ['SCHOOL_ADMIN', 'SUPER_ADMIN'] },
-  { to: '/admin/content-approval', icon: <FileCheck size={18} />,       label: 'اعتماد المحتوى', roles: ['SCHOOL_ADMIN', 'SUPER_ADMIN'] },
-  { to: '/admin/users',            icon: <Users size={18} />,            label: 'إدارة المستخدمين',roles: ['SCHOOL_ADMIN', 'SUPER_ADMIN'] },
-  { to: '/teacher',                icon: <BookOpen size={18} />,         label: 'لوحة المعلم',    roles: ['TEACHER', 'SCHOOL_ADMIN', 'SUPER_ADMIN'] },
-  { to: '/donor',                  icon: <TrendingUp size={18} />,       label: 'تقارير الأثر',   roles: ['DONOR', 'SUPER_ADMIN'] },
+const navItems = [
+  { to: '/admin',                  icon: <LayoutDashboard size={17} />, label: 'لوحة التحكم',     roles: ['SCHOOL_ADMIN', 'SUPER_ADMIN'] },
+  { to: '/admin/content-approval', icon: <FileCheck size={17} />,       label: 'اعتماد المحتوى',  roles: ['SCHOOL_ADMIN', 'SUPER_ADMIN'] },
+  { to: '/admin/users',            icon: <Users size={17} />,            label: 'المستخدمون',      roles: ['SCHOOL_ADMIN', 'SUPER_ADMIN'] },
+  { to: '/teacher',                icon: <BookOpen size={17} />,         label: 'لوحة المعلم',     roles: ['TEACHER', 'SCHOOL_ADMIN', 'SUPER_ADMIN'] },
+  { to: '/donor',                  icon: <TrendingUp size={17} />,       label: 'تقارير الأثر',    roles: ['DONOR', 'SUPER_ADMIN'] },
 ]
+
+const ROLE_LABELS: Record<string, string> = {
+  SCHOOL_ADMIN: 'مشرف', SUPER_ADMIN: 'مدير عام', TEACHER: 'معلم', DONOR: 'مانح',
+}
 
 export default function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { user, logout } = useAuthStore()
-  const { resolvedTheme } = useThemeStore()
   const navigate = useNavigate()
 
   const handleLogout = () => { logout(); navigate('/login') }
+  const filteredNav = navItems.filter(i => user?.role && i.roles.includes(user.role))
 
-  const filteredNav = navItems.filter(item =>
-    user?.role && item.roles.includes(user.role)
-  )
+  const SidebarContent = ({ onClose }: { onClose?: () => void }) => (
+    <div className="flex flex-col h-full" style={{ background: 'var(--sidebar-bg)' }}>
 
-  const RoleBadge = () => {
-    const roleLabels: Record<string, { label: string; cls: string }> = {
-      SCHOOL_ADMIN: { label: 'مشرف',    cls: 'badge-admin' },
-      SUPER_ADMIN:  { label: 'مدير عام', cls: 'badge-admin' },
-      TEACHER:      { label: 'معلم',     cls: 'badge-teacher' },
-      DONOR:        { label: 'مانح',     cls: 'badge-donor' },
-    }
-    const role = roleLabels[user?.role ?? '']
-    return role ? <span className={role.cls}>{role.label}</span> : null
-  }
-
-  const Sidebar = ({ mobile = false }) => (
-    <aside style={{
-      display: 'flex', flexDirection: 'column',
-      background: 'var(--sidebar-bg)',
-      borderLeft: `1px solid var(--sidebar-border)`,
-      height: mobile ? '100%' : '100vh',
-      position: mobile ? 'relative' : 'sticky',
-      top: 0,
-      transition: 'background .3s ease',
-    }}>
-      {/* Logo + Theme Toggle */}
-      <div style={{
-        padding: '20px',
-        borderBottom: `1px solid var(--border)`,
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      }}>
+      {/* Logo */}
+      <div className="flex items-center justify-between px-4 py-4 border-b" style={{ borderColor: 'var(--border)' }}>
         <div>
-          <h1 style={{
-            fontFamily: 'Tajawal',
-            fontSize: 28, fontWeight: 900,
-            background: 'linear-gradient(135deg, var(--teal), var(--gold))',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            lineHeight: 1,
-          }}>نور</h1>
-          <p style={{ fontSize: 11, color: 'var(--text-subtle)', marginTop: 2 }}>لوحة الإدارة</p>
+          <h1 className="text-2xl font-black leading-none"
+            style={{ fontFamily: 'Tajawal', background: 'linear-gradient(135deg,var(--teal),var(--gold))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            نور
+          </h1>
+          <p className="text-xs mt-0.5" style={{ color: 'var(--text-subtle)' }}>لوحة الإدارة</p>
         </div>
-        <ThemeToggle variant="icon" />
+        <div className="flex items-center gap-2">
+          <ThemeToggle variant="icon" />
+          {onClose && (
+            <button onClick={onClose} className="p-1.5 rounded-lg lg:hidden"
+              style={{ background: 'var(--surface-2)', color: 'var(--text-muted)', border: 'none', cursor: 'pointer' }}>
+              <X size={18} />
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* User info */}
-      <div style={{
-        padding: '12px 16px',
-        borderBottom: `1px solid var(--border)`,
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            width: 34, height: 34, borderRadius: '50%',
-            background: 'var(--teal-bg)',
-            border: `1px solid var(--teal-border)`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: 'var(--teal)', fontWeight: 700, fontSize: 14, flexShrink: 0,
-          }}>
+      {/* User */}
+      <div className="px-4 py-3 border-b" style={{ borderColor: 'var(--border)' }}>
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
+            style={{ background: 'var(--teal-bg)', border: '1px solid var(--teal-border)', color: 'var(--teal)' }}>
             {user?.fullNameAr?.charAt(0) ?? '؟'}
           </div>
-          <div style={{ minWidth: 0 }}>
-            <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold truncate" style={{ color: 'var(--text)' }}>
               {user?.fullNameAr}
             </p>
-            <RoleBadge />
+            {user?.role && (
+              <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                {ROLE_LABELS[user.role] ?? user.role}
+              </span>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav style={{ flex: 1, padding: '10px 8px', display: 'flex', flexDirection: 'column', gap: 2 }}>
+      {/* Nav */}
+      <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
         {filteredNav.map(item => (
           <NavLink
             key={item.to}
             to={item.to}
             end={['/admin', '/teacher', '/donor'].includes(item.to)}
-            onClick={() => mobile && setSidebarOpen(false)}
+            onClick={() => onClose?.()}
+            className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150"
             style={({ isActive }) => ({
-              display: 'flex', alignItems: 'center', gap: 10,
-              padding: '9px 12px', borderRadius: 8,
-              fontSize: 13, fontWeight: isActive ? 600 : 500,
-              textDecoration: 'none',
               background: isActive ? 'var(--sidebar-item-active-bg)' : 'transparent',
               color: isActive ? 'var(--sidebar-item-active-text)' : 'var(--text-muted)',
-              transition: 'all .15s',
+              textDecoration: 'none',
+              fontWeight: isActive ? 600 : 500,
             })}
           >
             {item.icon}
@@ -126,80 +94,62 @@ export default function Layout() {
       </nav>
 
       {/* Logout */}
-      <div style={{ padding: '10px 8px', borderTop: `1px solid var(--border)` }}>
+      <div className="p-2 border-t" style={{ borderColor: 'var(--border)' }}>
         <button
           onClick={handleLogout}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 10,
-            padding: '9px 12px', borderRadius: 8,
-            fontSize: 13, fontWeight: 500,
-            color: 'var(--text-muted)',
-            background: 'none', border: 'none', cursor: 'pointer', width: '100%',
-            transition: 'all .15s',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.background = 'rgba(220,38,38,.08)'
-            e.currentTarget.style.color = 'var(--error)'
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.background = 'none'
-            e.currentTarget.style.color = 'var(--text-muted)'
-          }}
+          className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium w-full transition-all duration-150"
+          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'rgba(220,38,38,.08)'; e.currentTarget.style.color = '#EF4444' }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = 'var(--text-muted)' }}
         >
-          <LogOut size={18} />
+          <LogOut size={17} />
           تسجيل الخروج
         </button>
       </div>
-    </aside>
+    </div>
   )
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg)' }}>
+    <div className="flex min-h-screen" style={{ background: 'var(--bg)' }}>
+
       {/* Desktop Sidebar */}
-      <div className="hidden lg:block" style={{ width: 220, flexShrink: 0 }}>
-        <Sidebar />
+      <div className="hidden lg:flex flex-col w-52 xl:w-56 flex-shrink-0 sticky top-0 h-screen border-l"
+        style={{ borderColor: 'var(--sidebar-border)' }}>
+        <SidebarContent />
       </div>
 
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 50 }} className="lg:hidden">
-          <div
-            style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,.4)' }}
-            onClick={() => setSidebarOpen(false)}
-          />
-          <div style={{ position: 'absolute', right: 0, top: 0, height: '100%', width: 220, boxShadow: 'var(--shadow-lg)' }}>
-            <Sidebar mobile />
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+          <div className="absolute right-0 top-0 h-full w-64 shadow-2xl border-l"
+            style={{ borderColor: 'var(--border)' }}>
+            <SidebarContent onClose={() => setSidebarOpen(false)} />
           </div>
         </div>
       )}
 
       {/* Main */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+      <div className="flex-1 flex flex-col min-w-0">
+
         {/* Mobile Top Bar */}
-        <header
-          className="lg:hidden"
-          style={{
-            position: 'sticky', top: 0, zIndex: 40,
-            background: 'var(--surface)',
-            borderBottom: `1px solid var(--border)`,
-            padding: '0 16px', height: 56,
-            display: 'flex', alignItems: 'center', gap: 12,
-          }}
-        >
-          <button onClick={() => setSidebarOpen(true)} style={{ color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer' }}>
+        <header className="lg:hidden sticky top-0 z-40 flex items-center gap-3 px-4 h-14 border-b"
+          style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+          <button onClick={() => setSidebarOpen(true)}
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', padding: 4 }}>
             <Menu size={22} />
           </button>
-          <h1 style={{ fontFamily: 'Tajawal', fontSize: 22, fontWeight: 900, background: 'linear-gradient(135deg, var(--teal), var(--gold))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          <h1 className="text-xl font-black"
+            style={{ fontFamily: 'Tajawal', background: 'linear-gradient(135deg,var(--teal),var(--gold))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             نور
           </h1>
-          <div style={{ marginRight: 'auto' }}>
+          <div className="mr-auto">
             <ThemeToggle variant="icon" />
           </div>
         </header>
 
-        {/* Page Content */}
-        <main style={{ flex: 1, padding: '24px 32px', maxWidth: 1280, width: '100%', margin: '0 auto' }}
-          className="p-4 lg:p-8">
+        {/* Content */}
+        <main className="flex-1 p-4 md:p-6 lg:p-8 w-full max-w-7xl mx-auto">
           <Outlet />
         </main>
       </div>
