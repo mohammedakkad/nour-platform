@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
+  darkMode: 'class', // ← هذا كان ناقصاً — يتحكم في dark: classes
   theme: {
     extend: {
       fontFamily: {
@@ -17,6 +18,9 @@ export default {
           800: '#115e59',
           900: '#134e4a',
         }
+      },
+      screens: {
+        xs: '480px',  // إضافة breakpoint للهواتف الصغيرة
       }
     },
   },
